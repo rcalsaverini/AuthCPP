@@ -41,7 +41,7 @@ public:
   bool flipConn(int i, int j);                          // flip edge (i,j) only if the result is a connected graph. Returns true if flip is succesful
   std::vector<int> degrees();                           // return a std::vector<int> with the degree of each node.
   double avgPathLength();                               // calculate the average path length
-  std::vector<double> closeness();
-  std::vector<double> betweenness();
+  std::vector<double> closeness();                      // determine closeness centrality for all nodes
+  std::vector<double> betweenness();                    // determine betweenness centrality for all nodes
 };
 

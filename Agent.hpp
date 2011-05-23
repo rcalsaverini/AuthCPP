@@ -57,11 +57,11 @@ public:
   double propose(int flips);            			                        // propose a new graph for the monte carlo algorithm by randomly fliping a number of edges, returns the energy of the new graph. 
   void accept();									// accept the proposed graph  
   void reject();                                                                        // reject the proposed graph
-  Graph getGraph();
-  std::vector<int> degrees()       { return graph.degrees()      ;}
-  double avgLength()               { return graph.avgPathLength();}
-  std::vector<double> closeness()  { return graph.closeness();}
-  std::vector<double> betweenness() {return graph.betweenness();}
+  //Graph getGraph();                                                                   // return a copy of the current graph... Don't need this now. 
+  std::vector<int> degrees()       { return graph.degrees()      ;}                     // return a vector with the degrees of all nodes.
+  double avgLength()               { return graph.avgPathLength();}                     // return the average geodesic length
+  std::vector<double> closeness()  { return graph.closeness();}                         // return a vector with the closeness centrality of all nodes.
+  std::vector<double> betweenness() {return graph.betweenness();}                       // return a vector with the betweenness centrality  of all nodes.
   
 
 

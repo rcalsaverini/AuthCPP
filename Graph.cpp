@@ -2,6 +2,7 @@
 #include <numeric>
 #include <algorithm>
 
+
 Graph::Graph(int size) : size(size) {
   graph = new igraph_t;
   igraph_full(graph, size, 0, 0);

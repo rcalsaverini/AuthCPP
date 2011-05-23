@@ -10,14 +10,14 @@
 
 typedef boost::tuple<int,int> intPair;
 
+//random number generator class
 class RndGen {
- public:
-  RndGen (int s); 
-  double getRndDouble (double minsp, double maxsp); 
-  int getRndInt (int min, int max); 
-  int getRndInt2 (int min, int max); 
-  intPair getIntPair(int min, int max);
-  void getIntPair(int min, int max, int& i, int& j);
+ public:  
+  RndGen (int s);					// constructor, s = seed
+  double getRndDouble (double minsp, double maxsp);	//get a random uniform double between minsp and maxsp
+  int getRndInt (int min, int max);			// get a random integer between min and max
+  intPair getIntPair(int min, int max);			// get a random pair of integers between min and max. Output is a boost::tuple<int,int> object
+  void getIntPair(int min, int max, int& i, int& j);	// get a random pair of integers between min and max. ouput by reference.
   
  private:
   //typedef boost::mt19937 gentype;

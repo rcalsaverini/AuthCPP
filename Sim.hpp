@@ -8,6 +8,7 @@ using namespace boost::accumulators;
 int getSeed();
 
 
+//class to accumulate the statistics about the simulation
 class Results {
 private:
   
@@ -18,14 +19,15 @@ private:
   accInt    accMaxDeg;
 
 public:
-  Results(){};
+  Results(){};                  // constructor;
+  
   void acc(double energy, 
 	   double accept,
 	   int    maxdeg,
 	   double avgdeg, 
 	   double length, 
 	   double maxcen, 
-	   double avgcen) {
+	   double avgcen) {   // accumulate values to calculate means and variances
     
     accEnergy(energy); 
     accAccept(accept);
@@ -36,20 +38,20 @@ public:
     accLength(length);
   }
 
-  double avgEnergy()		{return  mean(accEnergy);}
-  double varEnergy()		{return  variance(accEnergy);}
-  double avgAcceptance()	{return  mean(accAccept);}
-  double varAcceptance()	{return  variance(accAccept);}
-  double avgMaxDeg()		{return  mean(accMaxDeg);}
-  double varMaxDeg()		{return  variance(accMaxDeg);}
-  double avgAvgDeg()		{return  mean(accAvgDeg);}
-  double varAvgDeg()		{return  variance(accAvgDeg);}
-  double avgMaxCen()		{return  mean(accMaxCentrality);}
-  double varMaxCen()		{return  variance(accMaxCentrality);}
-  double avgAvgCen()		{return  mean(accAvgCentrality);}
-  double varAvgCen()		{return  variance(accAvgCentrality);}
-  double avgLength()		{return  mean(accLength);}
-  double varLength()		{return  variance(accLength);}
+  double avgEnergy()		{return  mean(accEnergy);}              //get mean energy
+  double varEnergy()		{return  variance(accEnergy);}          //get energy variance
+  double avgAcceptance()	{return  mean(accAccept);}		//get mean monte carlo acceptance rate
+  double varAcceptance()	{return  variance(accAccept);}		//get mc acceptance rate variance
+  double avgMaxDeg()		{return  mean(accMaxDeg);}		//get mean maximum degree
+  double varMaxDeg()		{return  variance(accMaxDeg);}		//get variance maximum degree
+  double avgAvgDeg()		{return  mean(accAvgDeg);}		//get mean average degree
+  double varAvgDeg()		{return  variance(accAvgDeg);}		//get variance average degree
+  double avgMaxCen()		{return  mean(accMaxCentrality);}	//get mean maximum centrality
+  double varMaxCen()		{return  variance(accMaxCentrality);}	//get variance maximum centrality
+  double avgAvgCen()		{return  mean(accAvgCentrality);}	//get mean average centrality
+  double varAvgCen()		{return  variance(accAvgCentrality);}	//get variance average centrality
+  double avgLength()		{return  mean(accLength);}		//get mean average geodesic length
+  double varLength()		{return  variance(accLength);}		//get variance average geodesic length
   
  
 };
@@ -65,10 +67,10 @@ private:
   typedef accumulator_set<int,    stats<tag::mean, tag::variance(lazy)> > accInt;
 
 public:
-  SimSolo(int n_, double beta_, double alpha_);
-  bool flipStep(double& E0);
-  double mcStep(double& E0);
-  void metroLoop(int nsteps, int burn, Results& res);
+  SimSolo(int n_, double beta_, double alpha_);		//constructor
+  bool flipStep(double& E0);				// a single flipstep
+  double mcStep(double& E0);				// a single montecarlo step = n flipsteps
+  void metroLoop(int nsteps, int burn, Results& res);	//full montecarlo loop.
 
 };
 
