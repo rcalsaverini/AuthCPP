@@ -14,6 +14,9 @@ teste.o: Teste.cpp
 Sim.o: Sim.cpp
 	$(CC) $(FLAGS) -c $^ -o $@	
 
+Sim2.o: Sim2.cpp
+	$(CC) $(FLAGS) -c $^ -o $@	
+
 Agent.o: Agent.cpp
 	$(CC) $(FLAGS) -c $^ -o $@	
 

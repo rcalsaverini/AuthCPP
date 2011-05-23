@@ -61,7 +61,7 @@ public:
   std::vector<int> degrees()       { return graph.degrees()      ;}
   double avgLength()               { return graph.avgPathLength();}
   std::vector<double> closeness()  { return graph.closeness();}
-  std::vector<double> betweenness() { return graph.betweenness();}
+  std::vector<double> betweenness() {return graph.betweenness();}
   
 
 
