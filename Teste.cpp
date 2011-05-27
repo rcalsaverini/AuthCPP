@@ -14,15 +14,48 @@
 //void testGraph();
 //void testAgent();
 void testSim();
-
+void testVec();
+void printAll(std::vector<Agent> foo, int t);
 int main(){
   //testRnd();
   //testGraph();
   //testAgent();
-  testSim();
+  //testSim();
+  testVec();
   return 0;
 }
 
+void printAll(std::vector<Agent> foo, int t){ 
+  std::cout << t << " ";
+  for_each(foo.begin(), foo.end(), [](Agent foo){std::cout << foo.energy() << " ";});
+  std::cout << std::endl;
+}
+
+void testVec(){
+  int i,j,k,l,n = 20;
+  double alpha = 0.75 * float(n * (n-1)/2);
+  RndGen rng(getSeed());
+  //std::vector<Agent> foo(n,Agent(n,getSeed(),alpha,0.2));
+  std::vector<Agent> foo;
+  foo.reserve(n);
+  for(int i = 0; i < n; i++){
+    Agent bar(n,getSeed(), alpha,0);
+    bar.propose(100);
+    bar.accept();
+    foo.push_back(bar);
+  }
+
+  for(int t = 0; t < 10000; ++t){
+    rng.getIntPair(0, n-1,i,j);
+    rng.getIntPair(0, n-1,k,l);
+    foo[i].setEdge(k,l, foo[j].getEdge(k,l) );
+    if(rng.getRndDouble(0,1) < 0.02) {
+      foo[j].propose(1);
+      foo[j].accept();
+    }
+    printAll(foo,t);
+    }
+}
 
 
 void testSim(){

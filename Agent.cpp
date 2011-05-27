@@ -39,6 +39,6 @@ void Agent::reject() {
   newgraph = graph;
 }
 
-Graph Agent::getGraph(){ 
+/*Graph Agent::getGraph(){ 
   return graph;
-}
+  }*/

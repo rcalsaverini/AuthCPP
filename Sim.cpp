@@ -11,14 +11,16 @@
 int getSeed() {  
   struct timeval time;
   gettimeofday(&time, NULL);
-  int seed = (time.tv_sec * 1000) + (time.tv_usec / 1000);
+  //int seed = (time.tv_sec * 1000)+ (time.tv_usec/1000) ;
+  int seed = (time.tv_usec + time.tv_sec*1000);
   return seed;    
 }
 
 //get the maximum of a vector
 template <class a> 
 a getMax(std::vector<a>& xs) {
-  return std::accumulate(xs.begin(), xs.end(), 0, std::max<a>);
+  auto maxfun = [](a x, a y){ return std::max(x,y);};
+  return std::accumulate(xs.begin(), xs.end(), 0, maxfun);
 }
 
 //get the mean of a vector

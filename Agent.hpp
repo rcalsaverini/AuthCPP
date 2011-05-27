@@ -29,14 +29,14 @@ public:
     , graph(graph_)
     , newgraph(graph_) {};    
 
-  Agent(int size_, int seed, double alpha_)		// create an agent with standard graph. mode: 0 - full graph, j>0 - star graph centered at j 
+  Agent(int size_, int seed, double alpha_)		// create an agent with standard full graph.  
     : size(size_)
     , alpha(alpha_)
     , rng(seed)
     , graph(size_)
     , newgraph(size_) {};
 
-  Agent(int size_, int seed, double alpha_, int center_) 	// create an agent with standard graph. mode: 0 - full graph, j>0 - star graph centered at j 
+  Agent(int size_, int seed, double alpha_, int center_) 	// create an agent with star graph centered at center;
     : size(size_)
     , alpha(alpha_)
     , rng(seed)

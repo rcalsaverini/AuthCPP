@@ -18,7 +18,7 @@ class RndGen {
   int getRndInt (int min, int max);			// get a random integer between min and max
   intPair getIntPair(int min, int max);			// get a random pair of integers between min and max. Output is a boost::tuple<int,int> object
   void getIntPair(int min, int max, int& i, int& j);	// get a random pair of integers between min and max. ouput by reference.
-  
+
  private:
   //typedef boost::mt19937 gentype;
   typedef boost::rand48  gentype;
