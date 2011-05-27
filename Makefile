@@ -1,38 +1,45 @@
-CC	= g++
-CFLAGS	= -std=gnu++0x -m64 -O3 -Wall  #-g -pg
-IFLAGS	= -I/usr/include/igraph
-LFLAGS	= -L/usr/local/lib -ligraph -lgsl -lgslcblas -lm 
-#FLAGS = -I/usr/include/igraph -L/usr/local/lib -ligraph -lgsl -lgslcblas -lm -m64 -O3 -std=gnu++0x
-# -g -pg -Wall -ansi
+PROJDIRS := src include
+AUXFILES := Readme
+SRCFILES := $(shell find $(PROJDIRS) -type f -name "*.cpp")
+HDRFILES := $(shell find $(PROJDIRS) -type f -name "*.hpp")
 
-all: test
-fresh: clean test
+OBJFILES := $(patsubst %.cpp,%.o,$(SRCFILES))
+DEPFILES := $(patsubst %.cpp,%.d,$(SRCFILES))
 
-test: teste.o Graph.o Random.o Agent.o Sim.o
-	$(CC) $(CFLAGS) $(LFLAGS) $^ -o $@
+CODEFILES := $(SRCFILES) $(HDRFILES) $(AUXFILES)
+ALLFILES := $(CODEFILES) Makefile
 
-teste.o: Teste.cpp
-	$(CC) $(CFLAGS) $(IFLAGS) -c $^ -o $@
 
-Sim.o: Sim.cpp
-	$(CC) $(CFLAGS) $(IFLAGS) -c $^ -o $@	
+WARNINGS :=-Wall -Wextra -pedantic -Wdouble-promotion -Wuninitialized -Winit-self -Wignored-qualifiers -Wmissing-include-dirs -Wswitch-default \
+	   -Wswitch-enum -Wunused-parameter -Wunused -Wunknown-pragmas -Wpointer-arith -Wcast-align -Wwrite-strings -Wmissing-declarations \
+	   -Wredundant-decls -Wno-long-long -Wconversion  #-Winline 
 
-Agent.o: Agent.cpp
-	$(CC) $(CFLAGS) $(IFLAGS) -c $^ -o $@	
+CXX	 := g++
+CXXFLAGS := -std=gnu++0x -m64 -O3 $(WARNINGS) 
+IFLAGS   := -I/usr/include/igraph
+LDFLAGS	 := -L/usr/local/lib -ligraph -lgsl -lgslcblas -lm 
+DEBUG    := -g -pg
 
-Graph.o: Graph.cpp
-	$(CC) $(CFLAGS) $(IFLAGS) -c $^ -o $@	
+.PHONY: all clean dist todolist
 
-Random.o: Random.cpp
-	$(CC) $(CFLAGS) $(IFLAGS) -c $^ -o $@	
+all: test 
 
-clean: clean-test clean-o clean-temp
+fresh: clean all
 
-clean-test:
-	-rm test -rfv
+clean: 
+	-@$(RM) $(OBJFILES) $(DEPFILES) test dist.tgz
+	-@$(RM) *~
+dist:
+	@tar czf dist.tgz $(ALLFILES)
 
-clean-o:
-	-rm *.o -rfv
+todolist:
+	-@for file in $(CODEFILES); do fgrep -H -e TODO -e FIXME $$file; done; true
 
-clean-temp:
-	-rm *~ -rfv
+test: $(OBJFILES)
+	@ $(CXX) $(CXXFLAGS) $(LDFLAGS) -MMD -MP $^ -o $@
+
+-include $(DEPFILES) 
+
+%.o: %.cpp Makefile
+	@ $(CXX) $(CXXFLAGS) $(IFLAGS) -MMD -MP -c $< -o $@ 
+
