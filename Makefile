@@ -5,6 +5,8 @@ HDRFILES := $(shell find $(PROJDIRS) -type f -name "*.hpp")
 
 OBJFILES := $(patsubst %.cpp,%.o,$(SRCFILES))
 DEPFILES := $(patsubst %.cpp,%.d,$(SRCFILES))
+TMPFILES := $(patsubst %.cpp,%.cpp~,$(SRCFILES)) $(patsubst %.hpp,%.hpp~,$(HDRFILES)) 
+
 
 CODEFILES := $(SRCFILES) $(HDRFILES) $(AUXFILES)
 ALLFILES := $(CODEFILES) Makefile
@@ -26,9 +28,14 @@ all: test
 
 fresh: clean all
 
-clean: 
+clean: clean-temps
 	-@$(RM) $(OBJFILES) $(DEPFILES) test dist.tgz
+
+clean-temps:
 	-@$(RM) *~
+	-@$(RM) $(TMPFILES)
+
+
 dist:
 	@tar czf dist.tgz $(ALLFILES)
 
