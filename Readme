@@ -1,1 +1,3 @@
-TODO: rafael 
+* TODO separate helper functions in a helper.hpp/helper.cpp
+* TODO need to measure many agents properties
+** TODO Verificar se é melhor agentes i perguntar a j sobre edge(j,k) com k <- nó aleatório, ou i perguntar a j sobre edge(k,l) com (k,l) aleatorio

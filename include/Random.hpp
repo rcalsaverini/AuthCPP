@@ -8,6 +8,8 @@
 #include <boost/random/variate_generator.hpp>
 #include <boost/tuple/tuple.hpp>
 
+int getSeed();
+
 typedef boost::tuple<int,int> intPair;
 
 //random number generator class

@@ -1,7 +1,19 @@
 #include "../include/Random.hpp"
 #include <iostream>
 #include <boost/tuple/tuple.hpp>
+#include <sys/time.h>
+
 using namespace boost::tuples;
+//get current time in milisseconds precision
+
+int getSeed() {  
+  struct timeval time;
+  gettimeofday(&time, NULL);
+  //int seed = (time.tv_sec * 1000)+ (time.tv_usec/1000) ;
+  int seed = (int(time.tv_usec) + int(time.tv_sec)*1000);
+  return seed;    
+}
+
 
 
 // OLD VERSION USING BOOST

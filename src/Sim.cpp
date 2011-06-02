@@ -1,5 +1,4 @@
 #include <cmath>
-#include <sys/time.h>
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -7,14 +6,6 @@
 
 #include "../include/Sim.hpp"
 
-//get current time in milisseconds precision
-int getSeed() {  
-  struct timeval time;
-  gettimeofday(&time, NULL);
-  //int seed = (time.tv_sec * 1000)+ (time.tv_usec/1000) ;
-  int seed = (int(time.tv_usec) + int(time.tv_sec)*1000);
-  return seed;    
-}
 
 //get the maximum of a vector
 template <class a> 

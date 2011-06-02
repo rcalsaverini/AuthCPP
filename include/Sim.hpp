@@ -2,10 +2,10 @@
 #include <boost/accumulators/statistics/stats.hpp>
 #include <boost/accumulators/statistics/mean.hpp>
 #include <boost/accumulators/statistics/variance.hpp>
-#include "Agent.hpp"
+#include "../include/Agent.hpp"
 using namespace boost::accumulators;
 
-int getSeed();
+
 
 
 //class to accumulate the statistics about the simulation

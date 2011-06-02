@@ -36,10 +36,10 @@ todolist:
 	-@for file in $(CODEFILES); do fgrep -H -e TODO -e FIXME $$file; done; true
 
 test: $(OBJFILES)
-	@ $(CXX) $(CXXFLAGS) $(LDFLAGS) -MMD -MP $^ -o $@
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -MMD -MP $^ -o $@
 
 -include $(DEPFILES) 
 
 %.o: %.cpp Makefile
-	@ $(CXX) $(CXXFLAGS) $(IFLAGS) -MMD -MP -c $< -o $@ 
+	$(CXX) $(CXXFLAGS) $(IFLAGS) -MMD -MP -c $< -o $@ 
 
