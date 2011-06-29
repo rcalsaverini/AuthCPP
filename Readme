@@ -1,3 +1,7 @@
-* TODO separate helper functions in a helper.hpp/helper.cpp
-* TODO need to measure many agents properties
-** TODO Verificar se é melhor agentes i perguntar a j sobre edge(j,k) com k <- nó aleatório, ou i perguntar a j sobre edge(k,l) com (k,l) aleatorio
+* DONE separate helper functions in a helper.hpp/helper.cpp
+* TODO need to measure many agents properties  
+  - [ ] TODO - Determine if graph is in a star-like phase or in a fully connected phase.
+  - [ ] TODO - Determine if graph hubs are correlated.
+  - [ ] TODO - Calculate overlaps
+  - [ ] TODO Classe para calcular medias, variancias e covariancias. 
+* TODO Verificar se é melhor agentes i perguntar a j sobre edge(j,k) com k <- nó aleatório, ou i perguntar a j sobre edge(k,l) com (k,l) aleatorio

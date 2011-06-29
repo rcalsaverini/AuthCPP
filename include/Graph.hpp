@@ -13,6 +13,9 @@
 #include <iostream>
 //#include <algorithm>
 #include <vector>
+#include <boost/numeric/ublas/symmetric.hpp>
+#include <boost/numeric/ublas/io.hpp>
+using namespace boost::numeric::ublas;
 
 class Graph
 {
@@ -42,6 +45,13 @@ public:
   std::vector<int> degrees();                           // return a std::vector<int> with the degree of each node.
   double avgPathLength();                               // calculate the average path length
   std::vector<double> closeness();                      // determine closeness centrality for all nodes
-  std::vector<double> betweenness();                    // determine betweenness centrality for all nodes
+  std::vector<double> betweenness();                    // determine betweenness centrality for all nodes  
+
+  std::vector<int> degrees()		const;          // return a std::vector<int> with the degree of each node - const version
+  double  avgPathLength()		const;          // calculate the average path length - const version
+  std::vector<double> closeness()	const;          // determine closeness centrality for all nodes - const version
+  std::vector<double> betweenness()	const;          // determine betweenness centrality for all nodes - const version
+  symmetric_matrix<double,lower> adjacency();            // get adjacency matrix
+  symmetric_matrix<double,lower> adjacency() const;      // get adjacency matrix
 };
 

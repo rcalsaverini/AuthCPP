@@ -22,19 +22,20 @@ IFLAGS   := -I/usr/include/igraph
 LDFLAGS	 := -L/usr/local/lib -ligraph -lgsl -lgslcblas -lm 
 DEBUG    := -g -pg
 
-.PHONY: all clean dist todolist
+.PHONY: all clean clean-temps dist todolist
 
-all: test 
+all: main info
 
-fresh: clean all
+authcpp: 
+	-@cp main authcpp
+	-@echo "Congratulations, you've built the authcpp program."
 
 clean: clean-temps
-	-@$(RM) $(OBJFILES) $(DEPFILES) test dist.tgz
+	-@$(RM) $(OBJFILES) $(DEPFILES) main dist.tgz authcpp
 
 clean-temps:
 	-@$(RM) *~
 	-@$(RM) $(TMPFILES)
-
 
 dist:
 	@tar czf dist.tgz $(ALLFILES)
@@ -42,11 +43,21 @@ dist:
 todolist:
 	-@for file in $(CODEFILES); do fgrep -H -e TODO -e FIXME $$file; done; true
 
-test: $(OBJFILES)
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -MMD -MP $^ -o $@
+main: $(OBJFILES)
+	@$(CXX) $(CXXFLAGS) $(LDFLAGS) -MMD -MP $^ -o $@
 
 -include $(DEPFILES) 
 
 %.o: %.cpp Makefile
-	$(CXX) $(CXXFLAGS) $(IFLAGS) -MMD -MP -c $< -o $@ 
+	@$(CXX) $(CXXFLAGS) $(IFLAGS) -MMD -MP -c $< -o $@ 
+
+fresh: clean all
+
+info: authcpp
+	-@echo ------------------------------	
+	-@echo AUTHCPP, CC-BY-NC - some rights reserved. Rafael S. Calsaverini.
+	-@echo VERSIONING INFO:
+	-@git describe --tags
+	-@git log --pretty=format:'%H%n%aD %d' --abbrev-commit --date=short -1
+
 

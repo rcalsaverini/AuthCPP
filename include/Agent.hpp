@@ -62,7 +62,15 @@ public:
   double avgLength()               { return graph.avgPathLength();}                     // return the average geodesic length
   std::vector<double> closeness()  { return graph.closeness();}                         // return a vector with the closeness centrality of all nodes.
   std::vector<double> betweenness() {return graph.betweenness();}                       // return a vector with the betweenness centrality  of all nodes.
-  
+
+  std::vector<int> degrees()		const   { return graph.degrees()	;}        // return a vector with the degrees of all nodes.
+  double avgLength()			const   { return graph.avgPathLength()	;}        // return the average geodesic length
+  std::vector<double> closeness()	const	{ return graph.closeness()	;}            // return a vector with the closeness centrality of all nodes.
+  std::vector<double> betweenness()	const	{ return graph.betweenness()	;}           // return a vector with the betweenness centrality  of all nodes.
+
+
+  symmetric_matrix<double,lower> adjacency() {return graph.adjacency();}
+  symmetric_matrix<double,lower> adjacency() const {return graph.adjacency();}
 
 
 

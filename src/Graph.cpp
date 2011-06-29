@@ -134,3 +134,86 @@ std::vector<double> Graph::betweenness() {
   return bet;
 }
 
+
+double Graph::avgPathLength() const {
+  igraph_real_t res;
+  igraph_average_path_length(graph, &res, 0, 0);
+  return ((double) res);
+} 
+
+
+std::vector<int> Graph::degrees() const {
+  igraph_vector_t results;
+  igraph_vs_t allnds;
+  std::vector<int> degs;
+  igraph_vs_all(&allnds);
+  igraph_vector_init(&results, size);
+  igraph_vector_null(&results);
+  igraph_degree(graph, &results, allnds, IGRAPH_ALL, IGRAPH_NO_LOOPS);
+  degs.insert(degs.begin(), VECTOR(results), VECTOR(results)+size);
+  igraph_vector_destroy(&results);
+  igraph_vs_destroy(&allnds);
+  return degs;
+}
+
+std::vector<double> Graph::closeness() const {
+  igraph_vector_t results;
+  igraph_vs_t allnods;
+  std::vector<double> clos;
+  igraph_vector_init(&results, size);
+  igraph_vector_null(&results);
+  igraph_vs_all(&allnods);
+  igraph_closeness(graph, &results, allnods, IGRAPH_IN);
+  clos.insert(clos.begin(), VECTOR(results), VECTOR(results) + size);
+  igraph_vector_destroy(&results);
+  igraph_vs_destroy(&allnods);
+  return clos;
+}
+
+std::vector<double> Graph::betweenness() const {
+  igraph_vector_t results;
+  igraph_vs_t allnods;
+  std::vector<double> bet;
+  igraph_vector_init(&results, size);
+  igraph_vector_null(&results);
+  igraph_vs_all(&allnods);
+  igraph_betweenness(graph, &results, allnods, false);
+  bet.insert(bet.begin(), VECTOR(results), VECTOR(results) + size);
+  igraph_vector_destroy(&results);
+  igraph_vs_destroy(&allnods);
+  return bet;
+}
+
+symmetric_matrix<double, lower> Graph::adjacency() {
+  double x;
+  int i,j;
+  igraph_matrix_t m; 
+  symmetric_matrix<double, lower> adjmatrix(size, size);
+  igraph_matrix_init(&m, size, size);
+  igraph_get_adjacency(graph, &m,IGRAPH_GET_ADJACENCY_LOWER);  /* IGRAPH_GET_ADJACENCY_BOTH);*/
+  for(i = 0; i < size; i++){
+    for(j = 0; j <=i; j++) {
+      x = MATRIX(m,i,j) ? 1 : 0;
+      adjmatrix(i,j) = x;
+    }
+  }
+  igraph_matrix_destroy(&m);
+  return adjmatrix;
+}
+
+symmetric_matrix<double, lower> Graph::adjacency() const {
+  double x;
+  int i,j;
+  igraph_matrix_t m; 
+  symmetric_matrix<double, lower> adjmatrix(size, size);
+  igraph_matrix_init(&m, size, size);
+  igraph_get_adjacency(graph, &m,IGRAPH_GET_ADJACENCY_LOWER);  /* IGRAPH_GET_ADJACENCY_BOTH);*/
+  for(i = 0; i < size; i++){
+    for(j = 0; j <=i; j++) {
+      x = MATRIX(m,i,j) ? 1 : 0;
+      adjmatrix(i,j) = x;
+    }
+  }
+  igraph_matrix_destroy(&m);
+  return adjmatrix;
+}
