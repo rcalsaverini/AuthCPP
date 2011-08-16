@@ -11,6 +11,9 @@
 #include "Graph.hpp"
 #include "Random.hpp"
 
+
+double energycalc(double alpha, const Graph &gr);
+
 class Agent 
 {
 private:
@@ -54,9 +57,10 @@ public:
   void setEdge(int i, int j, int value);						//set edge (i,j) to disconnected if value = 0, connected if value = 1
   int  getEdge(int i, int j);								//get edge status: 0 if unconnected, 1 if connected
   double energy();									// calculate energy = Nedges + alpha * avgPathLength
-  double propose(int flips);            			                        // propose a new graph for the monte carlo algorithm by randomly fliping a number of edges, returns the energy of the new graph. 
+  double propose(int flips);                  			                        // propose a new graph for the monte carlo algorithm by randomly fliping a number of edges, returns the energy of the new graph. 
   void accept();									// accept the proposed graph  
   void reject();                                                                        // reject the proposed graph
+  int countEdges() {return graph.countEdges();}
   //Graph getGraph();                                                                   // return a copy of the current graph... Don't need this now. 
   std::vector<int> degrees()       { return graph.degrees()      ;}                     // return a vector with the degrees of all nodes.
   double avgLength()               { return graph.avgPathLength();}                     // return the average geodesic length

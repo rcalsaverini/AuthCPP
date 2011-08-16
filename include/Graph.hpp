@@ -36,6 +36,7 @@ public:
   //other methods
   int countNodes() {return int(igraph_vcount(graph)); } // return number of nodes in the graph
   int countEdges() {return int(igraph_ecount(graph)); }	// return number of edges in the graph
+
   bool isConnected();					// return true if graph is strongly connected
   bool areConnected(int i, int j);			//return true if nodes i and j are connected
   void addEdge(int i, int j);				// safely add an edge between i and j (graph is unchanged if i and j are already connected)
@@ -51,6 +52,8 @@ public:
   double  avgPathLength()		const;          // calculate the average path length - const version
   std::vector<double> closeness()	const;          // determine closeness centrality for all nodes - const version
   std::vector<double> betweenness()	const;          // determine betweenness centrality for all nodes - const version
+  int countNodes() const {return int(igraph_vcount(graph)); } // return number of nodes in the graph
+  int countEdges() const {return int(igraph_ecount(graph)); }	// return number of edges in the graph
   symmetric_matrix<double,lower> adjacency();            // get adjacency matrix
   symmetric_matrix<double,lower> adjacency() const;      // get adjacency matrix
 };

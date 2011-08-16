@@ -15,23 +15,23 @@ ALLFILES := $(CODEFILES) Makefile
 WARNINGS :=-Wall -Wextra -pedantic -Wdouble-promotion -Wuninitialized -Winit-self -Wignored-qualifiers -Wmissing-include-dirs -Wswitch-default \
 	   -Wswitch-enum -Wunused-parameter -Wunused -Wunknown-pragmas -Wpointer-arith -Wcast-align -Wwrite-strings -Wmissing-declarations \
 	   -Wredundant-decls -Wno-long-long -Wconversion  #-Winline 
+DEBUG    := -g -pg
 
 CXX	 := g++
 CXXFLAGS := -std=gnu++0x -m64 -O3 $(WARNINGS) 
 IFLAGS   := -I/usr/include/igraph
 LDFLAGS	 := -L/usr/local/lib -ligraph -lgsl -lgslcblas -lm 
-DEBUG    := -g -pg
+
 
 .PHONY: all clean clean-temps dist todolist
 
 all: main info
 
-authcpp: 
-	-@cp main authcpp
+main: authcpp
 	-@echo "Congratulations, you've built the authcpp program."
 
 clean: clean-temps
-	-@$(RM) $(OBJFILES) $(DEPFILES) main dist.tgz authcpp
+	-@$(RM) $(OBJFILES) $(DEPFILES) main dist.tgz authcpp 
 
 clean-temps:
 	-@$(RM) *~
@@ -43,7 +43,10 @@ dist:
 todolist:
 	-@for file in $(CODEFILES); do fgrep -H -e TODO -e FIXME $$file; done; true
 
-main: $(OBJFILES)
+test: src/Foo.cpp
+	@$(CXX) $(CXXFLAGS) $(LDFLAGS) -MMD -MP $^ -o $@
+
+authcpp: $(OBJFILES)
 	@$(CXX) $(CXXFLAGS) $(LDFLAGS) -MMD -MP $^ -o $@
 
 -include $(DEPFILES) 

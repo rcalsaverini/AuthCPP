@@ -1,5 +1,5 @@
 import multiprocessing
-from multiprocessing import Process, Queue
+from multiprocessing import Process, Queue, Lock
 from time import sleep
 from random import uniform
 import os

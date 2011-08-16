@@ -88,7 +88,7 @@ bool Graph::flipConn(int i, int j) {
 double Graph::avgPathLength() {
   igraph_real_t res;
   igraph_average_path_length(graph, &res, 0, 0);
-  return ((double) res);
+  return double(res);
 } 
 
 
