@@ -21,8 +21,29 @@ using namespace boost::accumulators;
 
 typedef accumulator_set<double, stats<tag::mean, tag::variance(lazy)> > acc;
 
+class ManyAgentsH {
+private:
+  int n;			//number of agents 
+  double alpha;			//agent's cognitive capacity
+  double beta;			// inverse temperature
+  double J;			// interaction
+  RndGen rng;			// random number generator
+  std::vector<Agent> agents;	// a vector of agents;
+ 
 
-class SimMany {
+
+public:
+  SimMany(int n_, double beta_, double alpha_, double q_ );	     	     //constructor
+  double deltaIntEnergy(int i, int j, int k);                                   // variation in the interaction energy if we flip (j,k) edge in agent i.
+  bool flipStep(double& E0, int i, double beta);		     	     // a single flipstep
+  double mcStep(std::vector<double>& energies, double betaAtual);    	     // a single montecarlo step = n flipsteps, q = probability of an edge swap step
+  double ksteps(int thin, std::vector<double>& energies, double beta); 	     // run thin montecarlo steps without measuring anything  
+  double calcCorr(std::vector<double> prob, int i, int j);  
+  void metroLoop(int nsteps, int burn, int anSteps, int thin);		     //full montecarlo loop.
+
+};
+
+class ManyAgentsPassMessage {
 private:
   int n;			//number of agents 
   double alpha;			//agent's cognitive capacity
@@ -43,7 +64,6 @@ public:
   void metroLoop(int nsteps, int burn, int anSteps, int thin);		     //full montecarlo loop.
 
 };
-
 
 class SimSolo {
 private:
