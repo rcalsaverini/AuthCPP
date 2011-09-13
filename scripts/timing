@@ -1,0 +1,24 @@
+import os
+from time import time, sleep
+from numpy import arange, mean
+
+showList = lambda x : " ".join(map(str,x))
+
+def doCalculation(alpha, q, beta, size, steps, burn, annealing, lone):
+    cmd  = "./authcpp " + " ".join(map(str,[size, steps, burn, annealing, beta, alpha, q, lone]))
+    foo = os.popen(cmd)
+    output = "".join([line[0:-1] for line in foo])
+    res = output.split()
+    return map(float, res), output 
+
+q = 0.01
+beta = 7
+steps = 100
+burn = 5
+anneal = 5
+lone = 1
+for size in xrange(5, 30, 1):
+    t0 = time()
+    alpha = 0.25 * size * (size -1)
+    doCalculation(alpha, q, beta, size, steps, burn, anneal, lone)
+    print size, time() - t0

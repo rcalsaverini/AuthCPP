@@ -1,0 +1,156 @@
+#!/usr/bin/python
+
+import os
+import multiprocessing
+#import curses
+from multiprocessing import Process, Queue, Lock, Value
+from time import time, sleep
+from numpy import arange, mean
+from Queue import Empty
+
+showList = lambda x : " ".join(map(str,x))
+
+def doCalculation(alpha, q, beta, size, steps, burn, annealing, lone):
+    cmd  = "./authcpp " + " ".join(map(str,[size, steps, burn, annealing, beta, alpha, q, lone]))
+    foo = os.popen(cmd)
+    output = "".join([line[0:-1] for line in foo])
+    res = output.split()
+    return map(float, res), output 
+
+def cabecalhoT(fh, q, alpha, size, steps, burn, annealing):
+    print >>fh, "# cut: order parameters versus T"
+    print >>fh, "# alpha: " , alpha
+    print >>fh, "# size: "  , size
+    print >>fh, "# q: "     , q
+    print >>fh, "# steps: " , steps
+    print >>fh, "# burn: "  , burn
+    print >>fh, "# anneal: ", annealing
+
+def cabecalhoA(fh, q, T, size, steps, burn, annealing):
+    print >>fh, "# cut: order parameters versus Alpha"
+    print >>fh, "# temperature: " , T
+    print >>fh, "# size: "  , size
+    print >>fh, "# q: "     , q
+    print >>fh, "# steps: " , steps
+    print >>fh, "# burn: "  , burn
+    print >>fh, "# anneal: ", annealing
+
+def varyTemperature(alpha, size, q,  steps, burn, anneal, lone, fname):
+    T = 0.5
+    out = []
+    fhandle = open(fname, "w")
+    cabecalhoT(fhandle, q, alpha, size, steps, burn, anneal)
+    while (T > 0.001):
+        beta = 1.0/T
+        res, output = doCalculation(alpha, q, beta, size, steps, burn, anneal, lone)
+        print >>fhandle, alpha, T, showList(res)
+        T = T - 0.01
+    fhandle.close()
+
+def varyAlpha(T, size, q,  steps, burn, anneal, lone, fname):
+    u = 0.0 
+    out = []
+    fhandle = open(fname, "w")
+    cabecalhoA(fhandle, q, T, size, steps, burn, anneal)
+    beta = 1/T
+    while (u < 2.0):
+        alpha = size * (size - 1) / 2.0 * u
+        res, output = doCalculation(alpha, q, beta, size, steps, burn, anneal, lone)
+        print >>fhandle, alpha, T, showList(res)
+        u = u + 0.025
+    fhandle.close()
+
+
+
+def runManyT(queue, pars, maxk, t1, tinit, cnt):
+    while True:
+        try:
+            cnt.value = cnt.value + 1
+            size, q, steps, burn, anneal, lone, maxedges = pars
+            k,u = queue.get(block = False)
+            alpha = u * maxedges
+            fname = "./foo12/cutT_alpha" + str(k)
+            print "Running %d - %d of %d ..."%(k, cnt.value,maxk)
+            t0 = time()
+            varyTemperature(alpha, size, q, steps, burn, anneal, lone, fname)
+            t0 = time() - t0
+            # Progresso:
+            t1.value = t1.value + t0
+            tmedio = t1.value / float(cnt.value)
+            eta    = tmedio * (1+maxk - cnt.value)
+            print "Done! time: %f, tmedio: %f, ETA: %f, Elapsed: %f"%(t0, tmedio, eta, time() - tinit.value)
+        except Empty:
+            print "THE END"
+            break
+
+
+def runManyA(queue, pars, maxk, tinit):
+    while True:
+        try:
+            size, q, steps, burn, anneal, lone, maxedges = pars
+            k,T = queue.get(block = False)
+            fname = "./foo12/cutAlpha_T" + str(k)
+            print "Running %d of %d ..."%(k, maxk)
+            t0 = time()
+            varyAlpha(T, size, q, steps, burn, anneal, lone, fname)
+            t0 = time() - t0
+            elapsed  = time() - tinit.value
+            print "Done! time: %f, Total Elapsed: %f, ETA: %f"%(t0, elapsed, t0 * queue.qsize()/6)
+        except Empty:
+            print "THE END", queue.qsize()
+            break
+
+
+def mainT():
+    nthreads = multiprocessing.cpu_count()
+    queue = Queue()
+    q      = 0.0
+    size   = 15
+    steps  = 20000
+    burn   = 20000
+    anneal = 1000
+    maxedges = size * (size - 1)/2
+    pars   = (size, q, steps, burn, anneal, 1, maxedges)
+    uset   = arange(0.1, 1.8, 0.1) #[0.1, 0.2, 0.4, 0.6, 0.8, 0.9, 0.95, 1.0, 1.05, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6]
+    alphas = [(k+1,u) for (k,u) in enumerate(uset)]
+    maxk = len(uset)
+    for alpha in alphas:
+        queue.put(alpha)
+    t1  = Value('d', 0.0)
+    cnt = Value('i', 0)
+    t0  = Value('d', time())
+    sleep(10)
+    procs = [Process(target = runManyT, args = (queue, pars,maxk, t1, t0, cnt)) for i in xrange(nthreads)]
+    for p in procs:
+        p.start()
+    for p in procs:
+        p.join()
+
+
+def mainAlpha():
+    nthreads = multiprocessing.cpu_count()
+    queue = Queue()
+    q      = 0.0
+    size   = 15
+    steps  = 80000
+    burn   = 50000
+    anneal = 2000
+    maxedges = size * (size - 1)/2
+    pars   = (size, q, steps, burn, anneal, 1, maxedges)
+    Tset   = arange(0.01, 0.1, 0.01)
+    Ts = [(k+1,u) for (k,u) in enumerate(Tset)]
+    maxk = len(Tset)
+    for T in Ts:
+        queue.put(T)
+    t0  = Value('d', time())
+    print queue.qsize()
+    sleep(10)
+    procs = [Process(target = runManyA, args = (queue, pars,maxk,t0)) for i in xrange(nthreads)]
+    for p in procs:
+        p.start()
+    for p in procs:
+        p.join()
+
+
+if __name__ == "__main__":
+    mainAlpha()

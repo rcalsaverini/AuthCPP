@@ -9,6 +9,7 @@ from numpy import arange
 import re
 
 showList = lambda x : " ".join(map(str,x))
+
 def doCalculation(par):
     u,beta,size   = par
     q = 0

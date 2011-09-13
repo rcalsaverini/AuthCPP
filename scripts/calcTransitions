@@ -1,0 +1,143 @@
+#!/usr/bin/python
+
+import os
+from numpy import arange
+
+showList = lambda x : " ".join(map(str,x))
+
+def doCalculation(alpha, size, q, beta, steps, burn, annealing, lone):
+    cmd  = "./authcpp " + " ".join(map(str,[size, steps, burn, annealing, beta, alpha, q, lone]))
+    foo = os.popen(cmd)
+    output = "".join([line[0:-1] for line in foo])
+    res = map(float, output.split())
+    return  ( res[0] # maxDeg
+            , res[1] # avgDeg
+            , res[2] # correlation
+            , res[3] # energy
+            , res[4] # acceptRate
+            , res[5] # var(maxDeg)
+            , res[6] # var(avgDeg)
+            , res[7] # var(energy)
+            , res[8] # var(correlation)
+              )     
+
+def bissectionStar(ulo, uhi, thres, relerr, size, pars):
+    umid = (uhi + ulo)/2.0
+    nmax = size * (size - 1) / 2.0
+    rlo = doCalculation(nmax * ulo, size, *pars)
+    rhi = doCalculation(nmax * uhi, size, *pars)
+    while (uhi - ulo)/umid > relerr:
+        alpha = umid * nmax
+        res = doCalculation(alpha, size, *pars)
+        if (res[0] == size -1):
+            ulo = umid
+            rlo = res
+        else:
+            uhi = umid
+            rhi = res
+        umid = (uhi + ulo)/2.0
+    print (ulo, ulo * nmax, rlo[0]), (uhi, uhi*nmax, rhi[0])
+        
+
+def bissectionFull(ulo, uhi, thres, relerr, size, pars):
+    umid = (uhi + ulo)/2.0
+    nmax = size * (size - 1) / 2.0
+    rlo = doCalculation(nmax * ulo, size, *pars)
+    rhi = doCalculation(nmax * uhi, size, *pars)
+    while (uhi - ulo)/umid > relerr:
+        alpha = umid * nmax
+        res = doCalculation(alpha, size, *pars)
+        if (res[1] == size -1):
+            uhi = umid
+            rhi = res
+        else:
+            ulo = umid
+            rlo = res
+        umid = (uhi + ulo)/2.0
+    print (ulo, ulo * nmax, rlo[0]), (uhi, uhi*nmax, rhi[0])
+    
+
+def bissectionStruggle(ulo, uhi, thres, relerr, size, pars):
+    umid = (uhi + ulo)/2.0
+    nmax = size * (size - 1) / 2.0
+    rlo = doCalculation(nmax * ulo, size, *pars)
+    rhi = doCalculation(nmax * uhi, size, *pars)
+    while (uhi - ulo)/umid > relerr:
+        alpha = umid * nmax
+        res = doCalculation(alpha, size, *pars)
+        if (res[0] == size-1):
+            uhi = umid
+            rhi = res
+        else:
+            ulo = umid
+            rlo = res
+        umid = (uhi + ulo)/2.0
+    print (ulo, ulo * nmax, rlo[0]), (uhi, uhi*nmax, rhi[0])
+    
+def findWindow(size, du, pars):
+    u = 0.0
+    nmax = size * (size - 1) / 2.0
+    res = doCalculation(nmax * u, size, *pars)
+    while (res[0] < size-1):
+        u += du
+        res = doCalculation(nmax * u, size, *pars)
+        print u, res[0], res[1]
+    uerr = u
+    while (res[0] == size-1):
+        u += du
+        res = doCalculation(nmax * u, size, *pars)
+        print u, res[0], res[1]
+    ustar = u
+    # while (res[0] < size -1):
+    #     u += du
+    #     res = doCalculation(nmax * u, size, *pars)
+    #     #print u, res[0], res[1]
+    # ustruggle = u
+    # while (res[1] < size -1):
+    #     u += du
+    #     res = doCalculation(nmax * u, size, *pars)
+    #     #print u, res[0], res[1]
+    # ufull = u
+    return ustar
+
+
+
+def Secant(f, x0, x1, err):
+    f0 = f(x0)
+    f1 = f(x1)
+    fnew = f1
+    x = x1
+    while (abs(fnew) < err):
+        x = x1 + (x1 - x0)/(f1 - f0) * f1
+        fnew = f(x)
+        if (fnew * f1) < 0:
+            x0 = x
+            f0 = fnew
+        else:
+            x1 = x
+            f1 = fnew
+        print x0, x, x1, "   ", f0, fnew, f1
+    return x0,x,x1
+
+size   = 5 
+thres  = 1e-3
+relerr = 1e-3
+du = 0.2
+nmax = size * (size - 1.0)/2.0
+q      = 0.0
+beta   = 15.0
+steps  = 100000
+burn   = 100000
+anneal = 10
+lone   = 1
+pars = (q, beta, steps, burn, anneal, lone)
+ustar = findWindow(size,du,pars)
+
+f = lambda u : doCalculation(nmax * u, size, *pars)[0] - size + 1 + 1e-3
+print Secant(f, ustar-du, ustar, 1e-7)
+
+
+#print uerr, ustar, ustruggle, ufull
+#bissectionStar(ustar-du, ustar, thres, relerr, size, pars)
+#bissectionStruggle(ustruggle-du, ustruggle, thres, relerr, size, pars)
+#bissectionFull(ufull-du, ufull, thres, relerr, size, pars)
