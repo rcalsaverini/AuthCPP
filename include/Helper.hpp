@@ -37,13 +37,13 @@ template <class a> double getMean(const std::vector<a>& xs){
   return tmp/double(xs.size());
 }
 
-//print vector;
+// //print vector;
 
-template <class a,class F> void printVecWith(const std::vector<a>& xs, F func){
-  for_each(xs.begin(), xs.end(), [&](a x) {
-      std::cout << std::setiosflags(std::ios::fixed)
-		<< func(x) << " ";
-    });
-}
+// template <class a,class F> void printVecWith(const std::vector<a>& xs, F func){
+//   for_each(xs.begin(), xs.end(), [&](a x) {
+//       std::cout << std::setiosflags(std::ios::fixed)
+// 		<< func(x) << " ";
+//     });
+// }
 
 

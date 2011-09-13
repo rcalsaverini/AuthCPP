@@ -71,11 +71,13 @@ void SimSolo::metroLoop(int nsteps, int burn, int anSteps, int thin) {
   std::cout << std::setw(10) << std::setprecision(3);
   std::cout << mean(maxDeg) << " " 
 	    << mean(avgDeg) << " " 
+            << 0.0 << " "  // mean(corr)
 	    << mean(energy) << " " 
 	    << mean(acceptRate) << " " 
 	    << variance(maxDeg) << " " 
 	    << variance(avgDeg) << " " 
 	    << variance(energy) << " " 
+            << 0.0 << " "  //var(corr)
 	    << std::endl;
 }
 

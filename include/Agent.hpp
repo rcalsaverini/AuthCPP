@@ -45,6 +45,8 @@ public:
     , rng(seed)
     , graph(size_, center_)
     , newgraph(size_, center_) {};
+
+
   
   Agent(int size_, int seed, double alpha_, double p)            //  create an agent with an Erdos-Renyi(p) graph
     : size(size_)

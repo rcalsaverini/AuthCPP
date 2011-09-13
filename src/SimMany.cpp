@@ -1,4 +1,5 @@
 #include "../include/SimMany.hpp"
+//TESTE
 
 SimMany::SimMany(int n_, double beta_, double alpha_, double q_)  : n(n_)
 								  , alpha(alpha_)
@@ -10,7 +11,7 @@ SimMany::SimMany(int n_, double beta_, double alpha_, double q_)  : n(n_)
   
   agents.reserve(n_);
   for(int i =0; i < n_; i++){
-    Agent tmp(n, getSeed(), alpha,0);
+    Agent tmp(n, getSeed(), alpha);
     tmp.propose(100);
     tmp.accept();
     agents.push_back(tmp);
@@ -82,17 +83,33 @@ double SimMany::ksteps(int thin, std::vector<double>& energies, double betaAtual
   return accept/double(count);
 }
 
+double SimMany::calcCorr(std::vector<double> prob, int i, int j) {
+  double q = 0;
+  for(unsigned int k = 0; k < agents.size(); ++k)
+    {
+      for(unsigned int l = 0; l < k; ++l)
+	{
+	  double xi = agents[i].getEdge(k,l);
+	  double xj = agents[j].getEdge(k,l);
+	  q += ((xi - prob[i]) * (xj - prob[j]));
+	}
+    }
+  return (2 * q/ double(n * (n-1)));
+}
+
+double tempEnergy(Agent ag);
+double tempEnergy(Agent ag) {
+  return ag.energy();
+}
 
 void SimMany::metroLoop(int nsteps, int burn, int anSteps, int thin) {
   std::vector<double> energies(n);
-  acc maxDeg, avgDeg, centerCorr, energy, acceptRate;
-  transform(agents.begin(),agents.end(),energies.begin(),
-	    [](Agent ag) {return ag.energy();} 
-	    );
-
+  acc maxDeg, avgDeg, corr, energy, acceptRate;
+  transform(agents.begin(),agents.end(),energies.begin(), tempEnergy);
   //ANNEALING STEPS
   for(int t = 0; t < anSteps; ++t){
-    double betaAtual = double(t)/double(anSteps)  * beta; 
+    double betaAtual = beta * log(1.0 + double(t))/log(1.0 + double(anSteps)); // queda logaritmica na temperatura
+    //double(t)/double(anSteps)  * beta; 
     mcStep(energies, betaAtual); 
   }
   // BURN-IN
@@ -103,35 +120,66 @@ void SimMany::metroLoop(int nsteps, int burn, int anSteps, int thin) {
   for(int t = 0; t < nsteps; ++t){ 
     double accept = ksteps(thin, energies, beta);   
     acceptRate(accept);
-    std::vector<int> center(n,0);
+    std::vector<double> prob(n,0);
     for(unsigned int k = 0; k < agents.size(); ++k){
       int tmpcnt;
       std::vector<int> degs = agents[k].degrees();
       double max  = getMax(degs,tmpcnt);	
       double mean = getMean(degs);	
-      center[k] = tmpcnt;
+      prob[k] = mean / double(n-1);
       maxDeg(max);
       avgDeg(mean);
     }
     energy(getMean(energies));
-
-    /*double scenter = 0;
-    for(unsigned int k = 0; k < agents.size(); ++k)
-      for(unsigned int l = 0; l < k; ++l)
-	scenter += (center[k] == center[l])? 1.0 : 0.0;
-	centerCorr(2.0 * scenter / double(n * (n-1)));*/
-
-  }
-  std::cout << std::setw(10) << std::setprecision(3);
-  std::cout << mean(maxDeg) << " " 
-	    << mean(avgDeg) << " " 
-	    << mean(energy) << " " 
-	    << mean(acceptRate) << " " 
-    //<< mean(centerCorr) << " " 
-	    << variance(maxDeg) << " " 
-	    << variance(avgDeg) << " " 
-	    << variance(energy) << " " 
-    // << variance(centerCorr) << " "
     
-	    << std::endl;
+    
+    for(unsigned int i = 0; i < agents.size(); ++i){
+      for(unsigned int j = 0; j < i; ++j) {
+	corr(calcCorr(prob, i, j));
+      }
+    }
+  }
+    //std::cout << std::setw(10) << std::setprecision(3);
+  std::cout	<< mean(maxDeg)			<< " "	//3    0
+		<< mean(avgDeg)          	<< " "	//4    1 
+     
+		<< mean(corr)	                << " "	//5    2
+     		<< mean(energy)			<< " "	//6    3
+		<< mean(acceptRate)		<< " "	//7    4
+    
+		<< variance(maxDeg)		<< " "	//8    5
+     		<< variance(avgDeg)		<< " "	//9    6
+     		<< variance(energy)		<< " "	//10   7
+		<< variance(corr)               << " "  //11   8
+                << std::endl;
+  
 }
+
+
+  // std::vector<double> prob(n,0);
+  
+  // for(unsigned int k = 0; k < agents.size(); ++k){
+  //     int tmpcnt;
+  //     std::vector<int> degs = agents[k].degrees();
+  //     double max  = getMax(degs,tmpcnt);	
+  //     double mean = getMean(degs);	
+  //     std::cout << k << " " << tmpcnt << " " << mean/max << std::endl;
+  //     prob[k] = mean / double(n - 1);
+  // }
+  // std::cout << std::endl;
+  // std::cout << std::setw(10) << std::setprecision(3) << std::endl;  
+  
+  // for(unsigned int i = 0; i < agents.size(); ++i){      
+  //   for(unsigned int j = 0; j < i; j++){
+  //     double corr = 0;
+      
+  //     for(unsigned int k = 0; k < agents.size(); ++k){
+  // 	for(unsigned int l = 0; l < k; ++l){
+  // 	  double xi = agents[i].getEdge(k,l);
+  // 	  double xj = agents[j].getEdge(k,l);
+  // 	  corr += (xi - prob[i]) * (xj - prob[j]);
+  // 	}
+  //     }
+  //     std::cout << i << " " << j << " - " << 2 * corr /double(n * (n-1)) << std::endl;
+  //   }
+  // }

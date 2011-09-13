@@ -39,6 +39,7 @@ public:
   bool edgeSwapStep(int i, int j);				     	     // a single edgeSwapStep
   double mcStep(std::vector<double>& energies, double betaAtual);    	     // a single montecarlo step = n flipsteps, q = probability of an edge swap step
   double ksteps(int thin, std::vector<double>& energies, double beta); 	     // run thin montecarlo steps without measuring anything  
+  double calcCorr(std::vector<double> prob, int i, int j);  
   void metroLoop(int nsteps, int burn, int anSteps, int thin);		     //full montecarlo loop.
 
 };
@@ -58,4 +59,5 @@ public:
   double mcStep(double& E0, double beta);					// a single montecarlo step = n flipsteps
   double ksteps(int thin, double& E0, double beta);				// run thin mcsteps
   void metroLoop(int nsteps, int burn, int anSteps, int thin);	                //full montecarlo loop.
+  
 };

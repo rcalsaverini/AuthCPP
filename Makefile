@@ -1,7 +1,9 @@
 PROJDIRS := src include
+SCRIPTDIR := scripts
 AUXFILES := Readme
 SRCFILES := $(shell find $(PROJDIRS) -type f -name "*.cpp")
 HDRFILES := $(shell find $(PROJDIRS) -type f -name "*.hpp")
+SCRIPTFS := $(shell find $(SCRIPTDIR) -type f -name "*")
 
 OBJFILES := $(patsubst %.cpp,%.o,$(SRCFILES))
 DEPFILES := $(patsubst %.cpp,%.d,$(SRCFILES))
@@ -10,7 +12,7 @@ TMPFILES := $(patsubst %.cpp,%.cpp~,$(SRCFILES)) $(patsubst %.hpp,%.hpp~,$(HDRFI
 
 CODEFILES := $(SRCFILES) $(HDRFILES) $(AUXFILES)
 ALLFILES := $(CODEFILES) Makefile
-
+DISTFILES := $(ALLFILES) $(SCRIPTFS)
 
 WARNINGS :=-Wall -Wextra -pedantic -Wdouble-promotion -Wuninitialized -Winit-self -Wignored-qualifiers -Wmissing-include-dirs -Wswitch-default \
 	   -Wswitch-enum -Wunused-parameter -Wunused -Wunknown-pragmas -Wpointer-arith -Wcast-align -Wwrite-strings -Wmissing-declarations \
@@ -38,7 +40,7 @@ clean-temps:
 	-@$(RM) $(TMPFILES)
 
 dist:
-	@tar czf dist.tgz $(ALLFILES)
+	@tar czf dist.tgz $(DISTFILES)
 
 todolist:
 	-@for file in $(CODEFILES); do fgrep -H -e TODO -e FIXME $$file; done; true
