@@ -60,6 +60,7 @@ public:
   int  getEdge(int i, int j);								//get edge status: 0 if unconnected, 1 if connected
   double energy();									// calculate energy = Nedges + alpha * avgPathLength
   double propose(int flips);                  			                        // propose a new graph for the monte carlo algorithm by randomly fliping a number of edges, returns the energy of the new graph. 
+  double propose(int i, int j, int val);                  			                        // propose a new graph for the monte carlo algorithm by randomly fliping a number of edges, returns the energy of the new graph. 
   void accept();									// accept the proposed graph  
   void reject();                                                                        // reject the proposed graph
   int countEdges() {return graph.countEdges();}

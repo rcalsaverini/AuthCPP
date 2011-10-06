@@ -34,36 +34,18 @@ bool SimMany::flipStep(double& E0, int i, double betaAtual){
 }
 
 
-bool SimMany::edgeSwapStep(int i, int j){
+bool SimMany::edgeSwapStep(double& E0, int i, int j, double beta){
     int k;
     bool test = false;
-    if(rng.getRndDouble(0,1) < q) {
-        k = rng.getRndInt(0,n-1);
-        agents[i].setEdge(j,k, agents[j].getEdge(j,k));
-        test = true;
+    k = rng.getRndInt(0,n-1);
+    int edgeVal = agents[j].getEdge(j,k);
+    double E = agents[i].propose(j,k,edgeVal);
+    if( exp(-beta * (E - E0)) > rng.getRndDouble(0,1)){
+      agents[i].accept();
+      test = true;
     }
     return test;
 }
-
-//bool SimMany::edgeSwapStep(int i, int j) {
-//  int k;
-//  bool test = true;
-//  if( (rng.getRndDouble(0,1) < q)) {
-//   int cnt = 0;
-//   while (test) {
-//     k = rng.getRndInt(0,n-1);
-//     cnt++;
-//     if (agents[j].getEdge(j,k) == 1) {
-//        agents[i].setEdge(j,k, agents[j].getEdge(j,k));
-//        test = false;
-//     }
-//     else if (cnt > n) {
-//   break;
-//     }
-//   }
-// }
-// return (!test) ;
-
 
 
 double SimMany::mcStep(std::vector<double>& energies, double betaAtual) {
@@ -73,8 +55,10 @@ double SimMany::mcStep(std::vector<double>& energies, double betaAtual) {
   int count = 0;
   for(int k = 0; k < steps; k++){
    rng.getIntPair(0,n-1,i,j);
-   edgeSwapStep(i, j);
-   accept += flipStep(energies[i], i, betaAtual);
+   if(rng.getRndDouble(0,1) < q)
+     accept += edgeSwapStep(energies[i], i, j, betaAtual);
+   else 
+     accept += flipStep(energies[i], i, betaAtual);
    count++;
   }
  return double(accept)/double(count);

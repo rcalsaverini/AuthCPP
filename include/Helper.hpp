@@ -8,12 +8,6 @@
 #include <boost/numeric/ublas/io.hpp>
 using namespace boost::numeric::ublas;
 
-//return the phase
-int phaseClassification(double normMaxBet); 
-double calcMagnetization(symmetric_matrix<double,lower> adjmatrix, int size);
-double calcOverlap(symmetric_matrix<double,lower> adjmatrix1, symmetric_matrix<double,lower> adjmatrix2, int size);
-
-
 //get the maximum of a vector by return and get the maximum index by reference
 template <class a> a getMax(const std::vector<a>& xs, int& i) { 
   a maxval = xs[0];

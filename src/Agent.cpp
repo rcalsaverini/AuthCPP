@@ -27,25 +27,17 @@ double Agent::energy() {
 }
 
 
+double Agent::propose(int i, int j, int val) {
+  newgraph = graph;
+  newgraph.setEdge(i,j,val);
+  return energycalc(alpha, newgraph); //newgraph.countEdges() + alpha * newgraph.avgPathLength();
+}
+
 double Agent::propose(int flips) {
   newgraph = graph;
   int i,j,k = 0;
   int cnt = 0;
-  /*while(k < flips){
-    cnt++;
-    rng.getIntPair(0, size - 1, i, j);
-    newgraph.flipConn(i,j);
-    edges = newgraph.countEdges();
-    if (edges >= (size - 1)) {
-      k++;
-    }
-    else {
-      newgraph.flipEdge(i,j);
-    }
-  }*/
-
   while(k < flips) {
-    //boost::tie(i,j) = rng.getIntPair(0,size-1);
     rng.getIntPair(0, size - 1, i, j);
     cnt++;
     if (newgraph.flipConn(i,j)) 

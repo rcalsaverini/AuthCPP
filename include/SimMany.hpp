@@ -36,7 +36,7 @@ private:
 public:
   SimMany(int n_, double beta_, double alpha_, double q_ );	     	     //constructor
   bool flipStep(double& E0, int i, double beta);		     	     // a single flipstep
-  bool edgeSwapStep(int i, int j);				     	     // a single edgeSwapStep
+  bool edgeSwapStep(double& E0, int i, int j, double beta);	      	     // a single edgeSwapStep
   double mcStep(std::vector<double>& energies, double betaAtual);    	     // a single montecarlo step = n flipsteps, q = probability of an edge swap step
   double ksteps(int thin, std::vector<double>& energies, double beta); 	     // run thin montecarlo steps without measuring anything  
   double calcCorr(std::vector<double> prob, int i, int j);  

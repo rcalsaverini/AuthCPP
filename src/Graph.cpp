@@ -39,16 +39,14 @@ void Graph::swap(Graph& other) {
 }
 
 bool Graph::isConnected() {
-  int errorMSG;
   igraph_bool_t res;
-  errorMSG =  igraph_is_connected(graph, &res, IGRAPH_STRONG);
+  igraph_is_connected(graph, &res, IGRAPH_STRONG);
   return bool(res);
 }
 
 bool Graph::areConnected(int i, int j) {
-  int errorMSG;
   igraph_bool_t res;
-  errorMSG = igraph_are_connected(graph, i, j,&res);
+  igraph_are_connected(graph, i, j,&res);
   return bool(res);
 }
 
@@ -67,6 +65,13 @@ void Graph::delEdge(int i, int j) {
       igraph_delete_edges(graph, es);
     }
 }
+
+void Graph::setEdge(int i, int j, int value){
+  if (value)
+    addEdge(i,j);
+  else
+    delEdge(i,j);
+} 
 
 void Graph::flipEdge(int i, int j) {
   areConnected(i,j) ? delEdge(i,j):addEdge(i,j);

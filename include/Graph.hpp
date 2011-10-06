@@ -33,6 +33,7 @@ public:
   Graph& operator=(Graph other);			// assignment operator
   void swap(Graph& other);				// swap function, used for assignment with copy-and-swap idiom
 
+
   //other methods
   int countNodes() {return int(igraph_vcount(graph)); } // return number of nodes in the graph
   int countEdges() {return int(igraph_ecount(graph)); }	// return number of edges in the graph
@@ -41,6 +42,7 @@ public:
   bool areConnected(int i, int j);			//return true if nodes i and j are connected
   void addEdge(int i, int j);				// safely add an edge between i and j (graph is unchanged if i and j are already connected)
   void delEdge(int i, int j);				// safely delete and edge between i and j (graph is unchanged if i and j are not connected)
+  void setEdge(int i, int j, int value);
   void flipEdge(int i, int j);                          // flip an edge: add edge if unconnected, del edge if connected
   bool flipConn(int i, int j);                          // flip edge (i,j) only if the result is a connected graph. Returns true if flip is succesful
   std::vector<int> degrees();                           // return a std::vector<int> with the degree of each node.
