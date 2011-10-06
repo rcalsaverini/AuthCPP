@@ -45,11 +45,9 @@ dist:
 todolist:
 	-@for file in $(CODEFILES); do fgrep -H -e TODO -e FIXME $$file; done; true
 
-test: src/Foo.cpp
-	@$(CXX) $(CXXFLAGS) $(LDFLAGS) -MMD -MP $^ -o $@
-
 authcpp: $(OBJFILES)
 	@$(CXX) $(CXXFLAGS) $(LDFLAGS) -MMD -MP $^ -o $@
+
 
 -include $(DEPFILES) 
 
