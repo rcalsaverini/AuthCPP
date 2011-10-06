@@ -30,29 +30,27 @@ double Agent::energy() {
 double Agent::propose(int flips) {
   newgraph = graph;
   int i,j,k = 0;
-  int edges = graph.countEdges();
   int cnt = 0;
-  while(k < flips){
+  /*while(k < flips){
     cnt++;
     rng.getIntPair(0, size - 1, i, j);
-    newgraph.flipEdge(i,j);
+    newgraph.flipConn(i,j);
     edges = newgraph.countEdges();
     if (edges >= (size - 1)) {
       k++;
     }
     else {
       newgraph.flipEdge(i,j);
-      //std::cout << k << " " <<  cnt << " " << edges << std::endl;
     }
-  }
+  }*/
 
-  /*while(k < flips) {
+  while(k < flips) {
     //boost::tie(i,j) = rng.getIntPair(0,size-1);
     rng.getIntPair(0, size - 1, i, j);
-   
-    //if (newgraph.flipConn(i,j)) 
-    k++;
-    }*/
+    cnt++;
+    if (newgraph.flipConn(i,j)) 
+       k++;
+    }
   return energycalc(alpha, newgraph); //newgraph.countEdges() + alpha * newgraph.avgPathLength();
 }
 

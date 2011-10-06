@@ -22,8 +22,8 @@ class RndGen {
   void getIntPair(int min, int max, int& i, int& j);	// get a random pair of integers between min and max. ouput by reference.
 
  private:
-  //typedef boost::mt19937 gentype;
-  typedef boost::rand48  gentype;
+  typedef boost::mt19937 gentype;
+  //typedef boost::random::rand48  gentype;
   gentype r;
 };
 
